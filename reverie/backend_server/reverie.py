@@ -398,6 +398,8 @@ class ReverieServer:
           #  "persona": {"Klaus Mueller": {"movement": [38, 12]}}, 
           #  "meta": {curr_time: <datetime>}}
           curr_move_file = f"{sim_folder}/movement/{self.step}.json"
+          if not os.path.exists(f"{sim_folder}/movement"):
+            os.mkdir(f"{sim_folder}/movement")
           with open(curr_move_file, "w") as outfile: 
             outfile.write(json.dumps(movements, indent=2))
 
@@ -406,6 +408,16 @@ class ReverieServer:
           self.step += 1
           self.curr_time += datetime.timedelta(seconds=self.sec_per_step)
 
+          envs = {}
+          for k, v in movements["persona"].items():
+            maze = "the_ville" if "the Ville" in v["description"] else "none"
+            val = {"maze": maze,
+                   "x": v["movement"][0],
+                   "y": v["movement"][1]}
+            envs[k] = val
+          curr_env_file_new = f"{sim_folder}/environment/{self.step}.json"
+          with open(curr_env_file_new, "w") as outfile:
+            outfile.write(json.dumps(envs, indent=2))
           int_counter -= 1
           
       # Sleep so we don't burn our machines. 

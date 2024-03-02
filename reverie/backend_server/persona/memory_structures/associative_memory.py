@@ -146,6 +146,8 @@ class AssociativeMemory:
     with open(out_json+"/kw_strength.json", "w") as outfile:
       json.dump(r, outfile)
 
+    for k, v in self.embeddings.items():
+      self.embeddings[k] = v.tolist() if not isinstance(v, list) else v
     with open(out_json+"/embeddings.json", "w") as outfile:
       json.dump(self.embeddings, outfile)
 
